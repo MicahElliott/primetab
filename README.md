@@ -1,8 +1,8 @@
 # primetab
 
 [![CircleCI](https://circleci.com/gh/MicahElliott/primetab/tree/master.svg?style=svg)](https://circleci.com/gh/MicahElliott/primetab/tree/master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/codeclimate/codeclimate/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/maintainability)](https://codeclimate.com/github/MicahElliott/primetab/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/test_coverage)](https://codeclimate.com/github/MicahElliott/primetab/test_coverage)
 
 Print a multiplication table of prime numbers using the [Sieve of
 Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
@@ -53,7 +53,7 @@ See the generated codox HTML in _target/default/doc/index.html_
     % $BROWSER target/default/doc/index.html
 
 
-## Contributing
+## Development
 
 There is no CI or real quality control yet. :) This code relies on
 kibit, joker, etc to keep code clean.
@@ -80,9 +80,15 @@ changes:
 
     % lein auto test
 
+### Code quality
+
+There are configured setups for ensuring code quality:
+
+- [CircleCI](https://circleci.com/gh/MicahElliott/primetab/)
+- [CodeClimate](https://codeclimate.com/github/MicahElliott/primetab)
+
 ## TODO
 
-- Put into CircleCI
 - Expand on tests for boundaries, long-running, overflows, etc
 - Maybe add some specs
 - Make use of `prime-matrix` instead of ugly `tabulate`
