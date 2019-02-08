@@ -54,14 +54,36 @@ See the generated codox HTML in _target/default/doc/index.html_
 There is no CI or real quality control yet. :) This code relies on
 kibit, joker, etc to keep code clean.
 
+### Testing
+
+You can run the suite of unit tests with:
+
+    % lein test
+
+To also run integration tests, run:
+
+    % lein test :all
+
+In order to test "large" primes, you may need to set JVM options
+(i.e., initial memory allocation pool), like:
+
+    % JVM_OPTS='-Xss1g' lein test :all
+
+I see ~500 MB being allocated to run the integration tests.
+
+During development, it's handy to run unit tests constantly upon
+changes:
+
+    % lein auto test
 
 ## TODO
 
 - Put into CircleCI
-- Expand on tests for
+- Expand on tests for boundaries, long-running, overflows, etc
 - Maybe add some specs
 - Make use of `prime-matrix` instead of ugly `tabulate`
 - Rearrange and clarify prime funcs that are not in use/experimental
+- Add reloaded repl workflow via Component
 
 
 ## License

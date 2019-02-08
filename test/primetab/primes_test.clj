@@ -3,32 +3,22 @@
             [clojure.test :as t :refer [deftest testing is are]]
             [clojure.pprint :as pp]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Unit tests
+
 (deftest sample-is-prime
   (let [p5 (sut/take-primes 5)]
     (testing "a prime matches what we expect"
-      (is (= (nth p5 3)
-             7)))
+      (is (= 7
+             (nth p5 3))))
     (testing "correct number of primes generated"
-      (is (= (count p5)
-             5)))
+      (is (= 5
+             (count p5))))
     ))
 
-(deftest lotsa-primes
-  (testing "can generate a ton of primes"
-    (is (= (count (sut/take-primes 1000))
-           1000))))
-
 (deftest good-row-of-4x4
-  (is (= (last (sut/prime-matrix 4))
-         [14 21 35 49])))
-
-(deftest big-primes
-  (testing "an arbitrary 'big' prime is realized/generated"
-    (is (= (last (sut/take-primes 1000))
-           7919)))
-  (testing "the largest known prime on my system before StackOverflowError :)"
-    (is (= (last (sut/take-primes 1780))
-           15259))))
+  (is (= [14 21 35 49]
+         (last (sut/prime-matrix 4)))))
 
 ;; (sut/take-primes 100)
 (def p100
@@ -43,10 +33,28 @@
 (defn prime? [n]
   (contains? p100 n))
 
-(deftest rand-prime-is-really-prime
-  (is (prime? (last (sut/take-primes (rand-int 100))))))
+(deftest rand-prime
+  (testing "a random prime in small range is definitely prime"
+   (is (prime? (last (sut/take-primes (rand-int 100)))))))
 
-;; Integration/manual tests: timing, slowness, printing
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Integration tests
+
+(deftest ^:integration lotsa-primes
+  (testing "can generate a ton of primes"
+    (is (= 1000
+           (time (count (sut/take-primes 1000)))))))
+
+(deftest ^:integration big-primes
+  (testing "an arbitrary 'big' prime is realized/generated"
+    (is (= 7919
+           (last (sut/take-primes 1000)))))
+  (testing "largest prime on my system with default JVM settings before StackOverflowError :)"
+    (is (= 14519 ; ~500 ms
+           (last (sut/take-primes 1700))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Manual tests: timing, slowness, printing
 (comment
   (sut/tabulate {:number 8, :bland true, :labels true})
   (sut/tabulate {:number 8, :bland false})

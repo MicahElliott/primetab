@@ -21,7 +21,8 @@
 
   For simplicity, there are a couple optimizations that this function
   does not attempt:
-  - could skip to squares of each `n1`"
+  - could skip to squares of each `n1`
+  - could quit when square of `n1` is less than `remaining-naturals`"
   ([] (sieve (iterate inc 2)))
   ([remaining-naturals]
    (let [n1 (first remaining-naturals)]
