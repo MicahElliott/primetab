@@ -1,5 +1,7 @@
 # primetab
 
+[![CircleCI](https://circleci.com/gh/MicahElliott/primetab/tree/master.svg?style=svg)](https://circleci.com/gh/MicahElliott/primetab/tree/master)
+
 Print a multiplication table of prime numbers using the [Sieve of
 Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
 (see a nice visual demo there).
