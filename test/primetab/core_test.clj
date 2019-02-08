@@ -1,4 +1,5 @@
 (ns primetab.core-test
+  "Not going to really test the CLI driving code that comrpises core."
   (:require [clojure.test :refer [deftest testing is]]
             [primetab.core :refer :all]))
 

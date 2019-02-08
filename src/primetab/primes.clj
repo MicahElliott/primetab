@@ -1,8 +1,8 @@
 (ns primetab.primes
   "Generate the first `n` primes."
-  (:require [clojure.pprint :as pp]
-            [clojure.string :as str]
-            [io.aviso.ansi :as coloring :refer [red]]))
+  (:require
+   [clojure.string :as str]
+   [io.aviso.ansi :as coloring :refer [red]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Prime generators
@@ -12,11 +12,6 @@
   => (not-divisible? 7 3) -> true"
   [cand tgt]
   (not (zero? (mod cand tgt))))
-
-(comment
-  (take 20 (sieve (range 2 10)))
-  (time (take 500 (sieve (iterate inc 2))))
-  (take 5 (sieve)))
 
 (defn sieve
   "Generate infinite primes lazily via the Sieve of Eratosthenes, recursively.
@@ -72,12 +67,62 @@
    [6 9 15 21]
    [10 15 25 35]
    [14 21 35 49]]
+
+  This does nearly twice as many calculations as is necessary, since
+  it's a reflection matrix.
   "
   [n]
   (let [primes (take-primes n sieve)]
     (for [p primes]
       (for [q primes]
         (* p q)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Printing (not tested)
+
+;; (print-row [1 2 3] {:num-primes 3, :bland true})
+(defn- print-row
+  "Print a row with optional label."
+  ;; NOTE: NIU, but better than the hacky all-in-one `tabulate`.
+  [row options]
+  (let [colorize (if (:bland options) red identity)
+        ;; if-let would be better but can't use binding in else condition
+        row      (let [l (:raw options)]
+                   (if l row (cons (colorize l) row)))]
+    (print (str/join "\t" row))))
+
+(defn- print-label
+  "Flexibly print labeling based on `opts`.
+  Possibilities include colorful, bland, or nothing."
+  [opts s pre post]
+  (let [printfn (if (:raw opts) (constantly nil) print)
+        labelfn (if (:raw opts)
+                  (constantly nil)
+                  (if (:bland opts) identity red))]
+    (if pre
+      (printfn pre (labelfn s) post)
+      (printfn (labelfn s) post))))
+
+(defn tabulate
+  "Print a multiplication table of primes, while calculating them."
+  ;; TODO: leverage `prime-matrix` instead of mixing presentation and
+  ;;       calculation as is done here.
+  [opts]
+  (let [del    (if (:csv opts) "," \tab) ; BUG: CSV has bad spacing
+        primes (take-primes (:num-primes opts))]
+    (print-label opts (str/join del primes) del "\n")  ; headings
+    (doseq [p primes]
+      (print-label opts p nil del) ; labels
+      (doseq [q primes]
+        (print (* p q) del)) ; calculate each cell
+      (println))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Printing playground
+(comment
+  (tabulate {:num-primes 8, :bland false, :raw false})
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Primes playground/experiments and early attempts
@@ -122,49 +167,4 @@
   (some zero? [1 0 2])
   (primes-rdc [2 3 5] 7)
   (primes-rdc [2 3 5] 8)
-  )
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Printing
-
-;; (print-row [1 2 3] {:num-primes 3, :bland true})
-(defn- print-row
-  "Print a row with optional label."
-  ;; NOTE: NIU, but better than the hacky all-in-one `print-label`.
-  [row options]
-  (let [colorize (if (:bland options) red identity)
-        row      (let [l (:raw options)]
-                   (if l row (cons (colorize l) row)))]
-    (print (str/join "\t" row))))
-
-(defn- print-label
-  "Flexibly print labeling based on `opts`.
-  Possibilities include colorful, bland, or nothing."
-  [opts s pre post]
-  (let [printfn (if (:raw opts) (constantly nil) print)
-        labelfn (if (:raw opts)
-                  (constantly nil)
-                  (if (:bland opts) identity red))]
-    (if pre
-      (printfn pre (labelfn s) post)
-      (printfn (labelfn s) post))))
-
-(defn tabulate
-  "Print a multiplication table of primes."
-  [opts]
-  (let [del    (if (:csv opts) "," \tab)
-        primes (take-primes (:num-primes opts))]
-    (print-label opts (str/join del primes) del "\n")  ; headings
-    (doseq [p primes]
-      (print-label opts p nil del)
-      (doseq [q primes]
-        (print (* p q) del))
-      (println))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Printing playground
-(comment
-  (tabulate {:num-primes 8, :bland false, :raw false})
   )

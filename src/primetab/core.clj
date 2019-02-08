@@ -3,6 +3,7 @@
 
   Default behavior is to print column headers, row labels, in color,
   in TSV format."
+  ;; Not unit-tested
   (:gen-class)
   (:require
    [clojure.string :as str]

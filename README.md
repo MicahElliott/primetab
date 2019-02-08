@@ -38,13 +38,27 @@ Print a small `5x5` table, blandly without color, in CSV format.
 
 ## More documentation
 
-See the generated codox html in target/default/doc/index.html
+Generate HTML docs:
+
+    % lein codox
+
+See the generated codox HTML in _target/default/doc/index.html_
+
+    % $BROWSER target/default/doc/index.html
 
 
 ## Contributing
 
 There is no CI or real quality control yet. :) This code relies on
 kibit, joker, etc to keep code clean.
+
+
+## TODO
+
+- Put into CircleCI
+- Expand on tests for
+- Maybe add some specs
+- Make use of `prime-matrix` instead of ugly `tabulate`
 
 
 ## License
