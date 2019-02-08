@@ -22,6 +22,14 @@
   (is (= (last (sut/prime-matrix 4))
          [14 21 35 49])))
 
+(deftest big-primes
+  (testing "an arbitrary 'big' prime is realized/generated"
+    (is (= (last (sut/take-primes 1000))
+           7919)))
+  (testing "the largest known prime on my system before StackOverflowError :)"
+    (is (= (last (sut/take-primes 1780))
+           15259))))
+
 ;; (sut/take-primes 100)
 (def p100
   "Set of first verified 100 primes"
@@ -44,4 +52,11 @@
   (sut/tabulate {:number 8, :bland false})
   (time (take 10 (lazy-seq (reduce primes-rdc [2] (take 100 (iterate inc 3))))))
   (time (last (take 20 (reductions primes-rdc [2] (take 500 (iterate inc 3))))))
+
+  (take 20 (sut/sieve (range 2 10)))
+  ;; .07 ms!
+  (time (take 500000000 (sut/sieve (iterate inc 2))))
+  (take 5 (sut/sieve))
+
+
   )
