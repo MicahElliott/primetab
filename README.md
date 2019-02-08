@@ -1,12 +1,14 @@
 # primetab
 
-Print a multiplication table of prime numbers using the sieve of Eratosthenes.
+Print a multiplication table of prime numbers using the [Sieve of
+Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
+(see a nice visual demo there).
 
 ## Usage
 
 Git this repo:
 
-    % git clone git@github:MicahElliott/primetab
+    % git clone git@github.com:MicahElliott/primetab
     % cd primetab
 
 Build:
@@ -59,6 +61,7 @@ kibit, joker, etc to keep code clean.
 - Expand on tests for
 - Maybe add some specs
 - Make use of `prime-matrix` instead of ugly `tabulate`
+- Rearrange and clarify prime funcs that are not in use/experimental
 
 
 ## License

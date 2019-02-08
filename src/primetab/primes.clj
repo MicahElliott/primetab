@@ -107,6 +107,10 @@
   "Print a multiplication table of primes, while calculating them."
   ;; TODO: leverage `prime-matrix` instead of mixing presentation and
   ;;       calculation as is done here.
+
+  ;; Another way to cleanly delimit is carefully spaced numbers where
+  ;; the **length of the longest number plus one** determines the
+  ;; field width.  And the headers/labels could use `---` and `|`.
   [opts]
   (let [del    (if (:csv opts) "," \tab) ; BUG: CSV has bad spacing
         primes (take-primes (:num-primes opts))]
