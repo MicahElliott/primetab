@@ -35,7 +35,9 @@
 
 (deftest rand-prime
   (testing "a random prime in small range is definitely prime"
-   (is (prime? (last (sut/take-primes (rand-int 100)))))))
+    (is (prime? (last (sut/take-primes (rand-int 100))))))
+  (testing "every prime from small random sampling (~30) is truly a prime"
+    (is (every? true? (map prime? (random-sample 0.3 p100))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Integration tests
@@ -43,7 +45,7 @@
 (deftest ^:integration lotsa-primes
   (testing "can generate a ton of primes"
     (is (= 1000
-           (time (count (sut/take-primes 1000)))))))
+           (count (sut/take-primes 1000))))))
 
 (deftest ^:integration big-primes
   (testing "an arbitrary 'big' prime is realized/generated"

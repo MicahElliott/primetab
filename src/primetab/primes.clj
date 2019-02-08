@@ -23,7 +23,7 @@
   does not attempt:
   - could skip to squares of each `n1`
   - could quit when square of `n1` is less than `remaining-naturals`"
-  ([] (sieve (iterate inc 2)))
+  ([] (sieve (iterate inc 2))) ; intended public version is this no-arg call
   ([remaining-naturals]
    (let [n1 (first remaining-naturals)]
      (lazy-seq
@@ -33,14 +33,14 @@
 
 (defn primes-rdc
   "[NIU] A reducer that serves as one example method to generate primes.
-  Returns the resulting sequence of primes, appending if new `cand`idate
-  is prime."
+  Returns the resulting sequence of `primes`, appending if new
+  `cand`idate is prime."
   [primes cand]
   (if (some zero? (map (partial mod cand) primes))
     primes
     (conj primes cand)))
 
-;; (time (primes2 20)) ; horrible!
+;; (time (primes2 200)) ; horrible! 1.5s
 (defn primes2
   "[NIU] Another approach to generating primes.
   This is hacky in that it needs to limit the `iterate` and does so by
@@ -55,7 +55,7 @@
   "Generate a sequence of `n` primes by calling a prime function, like `sieve`."
   ([n] (take-primes n sieve))
   ([n prime-fn]
-   (take n (prime-fn (iterate inc 2)))))
+   (take n (prime-fn))))
 
 ;; (prime-matrix 4)
 (defn prime-matrix
