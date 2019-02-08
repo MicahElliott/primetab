@@ -1,6 +1,8 @@
 # primetab
 
 [![CircleCI](https://circleci.com/gh/MicahElliott/primetab/tree/master.svg?style=svg)](https://circleci.com/gh/MicahElliott/primetab/tree/master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/codeclimate/codeclimate/test_coverage)
 
 Print a multiplication table of prime numbers using the [Sieve of
 Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
