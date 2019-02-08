@@ -1,8 +1,8 @@
 # primetab
 
 [![CircleCI](https://circleci.com/gh/MicahElliott/primetab/tree/master.svg?style=svg)](https://circleci.com/gh/MicahElliott/primetab/tree/master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/maintainability)](https://codeclimate.com/github/MicahElliott/primetab/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/test_coverage)](https://codeclimate.com/github/MicahElliott/primetab/test_coverage)
+<!-- [![Maintainability](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/maintainability)](https://codeclimate.com/github/MicahElliott/primetab/maintainability) -->
+<!-- [![Test Coverage](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/test_coverage)](https://codeclimate.com/github/MicahElliott/primetab/test_coverage) -->
 
 Print a multiplication table of prime numbers using the [Sieve of
 Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
@@ -23,7 +23,6 @@ There is a tiny wrapper script provided. Run with:
 
     % ./primetab [options]
 
-
 ## Options
 
 Run `primetab --help` to see the full list of options.
@@ -34,13 +33,11 @@ The basic configurables are:
 - `raw` format to omit labels/headers for the table
 - `c`sv or `t`sv delimiters
 
-
 ## Examples
 
 Print a small `5x5` table, blandly without color, in CSV format.
 
     % ./primetab -n5 -bc
-
 
 ## More documentation
 
@@ -51,7 +48,6 @@ Generate HTML docs:
 See the generated codox HTML in _target/default/doc/index.html_
 
     % $BROWSER target/default/doc/index.html
-
 
 ## Development
 
@@ -87,6 +83,9 @@ There are configured setups for ensuring code quality:
 - [CircleCI](https://circleci.com/gh/MicahElliott/primetab/)
 - [CodeClimate](https://codeclimate.com/github/MicahElliott/primetab)
 
+CodeClimate does not treat Clojure as a first-class citizen, but they
+support some basic checks, like `lein kibit`.
+
 ## TODO
 
 - Expand on tests for boundaries, long-running, overflows, etc
@@ -94,7 +93,6 @@ There are configured setups for ensuring code quality:
 - Make use of `prime-matrix` instead of ugly `tabulate`
 - Rearrange and clarify prime funcs that are not in use/experimental
 - Add reloaded repl workflow via Component
-
 
 ## License
 
