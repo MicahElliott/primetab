@@ -13,8 +13,7 @@
              (nth p5 3))))
     (testing "correct number of primes generated"
       (is (= 5
-             (count p5))))
-    ))
+             (count p5))))))
 
 (deftest good-row-of-4x4
   (is (= [14 21 35 49]
@@ -55,18 +54,26 @@
     (is (= 14519 ; ~500 ms
            (last (sut/take-primes 1700))))))
 
+;; (take 2 (nth 100 (sut/take-primes 1700)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Manual tests: timing, slowness, printing
 (comment
   (sut/tabulate {:number 8, :bland true, :labels true})
   (sut/tabulate {:number 8, :bland false})
-  (time (take 10 (lazy-seq (reduce primes-rdc [2] (take 100 (iterate inc 3))))))
-  (time (last (take 20 (reductions primes-rdc [2] (take 500 (iterate inc 3))))))
+  (sut/tabulate {:num-primes 8, :bland false, :raw false})
+  (sut/tabulate {:num-primes 8, :bland false, :raw false, :csv true})
+
+  (time (take 10 (lazy-seq (reduce sut/primes-rdc [2] (take 100 (iterate inc 3))))))
+  (time (last (lazy-seq (reduce sut/primes-rdc [2] (take 160000 (iterate inc 3)))))) ; 15s
+  (time (last (take 20 (reductions sut/primes-rdc [2] (take 500 (iterate inc 3))))))
+
+  (def primes (sieve))
+  (take 2 (drop 2000 primes)) ; (7927 7933)
+  (take 2 (drop-while #(< % 16000) primes))
 
   (take 20 (sut/sieve (range 2 10)))
   ;; .07 ms!
   (time (take 500000000 (sut/sieve (iterate inc 2))))
   (take 5 (sut/sieve))
-
-
   )

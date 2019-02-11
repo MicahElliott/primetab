@@ -22,7 +22,7 @@
    ["-r" "--raw"        "Omit column headers and row labels"
     :default false]
    ["-t" "--tsv"        "Print in TSV format"]
-   ["-c" "--csv"        "Print in CSV format (bugs here!)"]
+   ["-c" "--csv"        "Print in CSV format"]
    ["-h" "--help"]])
 
 (defn- usage

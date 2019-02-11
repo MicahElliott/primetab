@@ -2,7 +2,8 @@
   "Generate the first `n` primes."
   (:require
    [clojure.string :as str]
-   [io.aviso.ansi :as coloring :refer [red]]))
+   [io.aviso.ansi :as coloring :refer [red]]
+   [primetab.primes :as sut]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Prime generators
@@ -40,12 +41,12 @@
     primes
     (conj primes cand)))
 
-;; (time (primes2 200)) ; horrible! 1.5s
-(defn primes2
+;; (time (primes-slow 200)) ; horrible! 1.5s
+(defn primes-slow
   "[NIU] Another approach to generating primes.
   This is hacky in that it needs to limit the `iterate` and does so by
   squaring the actually desired limit `n`."
-  ([] (primes2 10))
+  ([] (primes-slow 10))
   ([n]
    (take n
          (reduce primes-rdc [2] (take (* n n) (iterate inc 3))))))
@@ -79,7 +80,7 @@
         (* p q)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Printing (not tested)
+;; Printing (see manual tests)
 
 ;; (print-row [1 2 3] {:num-primes 3, :bland true})
 (defn- print-row
@@ -92,17 +93,18 @@
                    (if l row (cons (colorize l) row)))]
     (print (str/join "\t" row))))
 
-(defn- print-label
-  "Flexibly print labeling based on `opts`.
-  Possibilities include colorful, bland, or nothing."
+(defn- print-marker
+  "Flexibly print row and column indicators (column headers, row
+  labels) based on `opts`.  Possibilities include colorful, bland, or
+  omission."
   [opts s pre post]
-  (let [printfn (if (:raw opts) (constantly nil) print)
-        labelfn (if (:raw opts)
-                  (constantly nil)
-                  (if (:bland opts) identity red))]
+  (let [printfn  (if (:raw opts) (constantly nil) printf)
+        markerfn (if (:raw opts)
+                   (constantly nil)
+                   (if (:bland opts) identity red))]
     (if pre
-      (printfn pre (labelfn s) post)
-      (printfn (labelfn s) post))))
+      (printfn "%s%s%s" pre (markerfn s) post)
+      (printfn "%s%s"       (markerfn s) post))))
 
 (defn tabulate
   "Print a multiplication table of primes, while calculating them."
@@ -113,21 +115,15 @@
   ;; the **length of the longest number plus one** determines the
   ;; field width.  And the headers/labels could use `---` and `|`.
   [opts]
-  (let [del    (if (:csv opts) "," \tab) ; BUG: CSV has bad spacing
+  (let [del    (if (:csv opts) "," \tab)
         primes (take-primes (:num-primes opts))]
-    (print-label opts (str/join del primes) del "\n")  ; headings
+    (print-marker opts (str/join del primes) del "\n")  ; headings
     (doseq [p primes]
-      (print-label opts p nil del) ; labels
+      (print-marker opts p nil del) ; labels
       (doseq [q primes]
-        (print (* p q) del)) ; calculate each cell
+        (printf "%s%s" (* p q) del)) ; calculate each cell
       (println))))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Printing playground
-(comment
-  (tabulate {:num-primes 8, :bland false, :raw false})
-  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Primes playground/experiments and early attempts
