@@ -7,17 +7,20 @@
 ;; Unit tests
 
 (deftest sample-is-prime
-  (let [p5 (sut/take-primes 5)]
-    (testing "a prime matches what we expect"
-      (is (= 7
-             (nth p5 3))))
-    (testing "correct number of primes generated"
-      (is (= 5
-             (count p5))))))
+  (testing "prime generation"
+    (let [p5 (sut/take-primes 5)]
+      (testing "where a prime matches what we expect"
+        (is (= 7
+               (nth p5 3))))
+      (testing "where the correct number of primes generated"
+        (is (= 5
+               (count p5)))))))
 
 (deftest good-row-of-4x4
-  (is (= [14 21 35 49]
-         (last (sut/prime-matrix 4)))))
+  (testing "matrices"
+    (testing "where the last row of a 4x4 prime matrix matches"
+      (is (= [14 21 35 49]
+             (last (sut/prime-matrix 4)))))))
 
 ;; (sut/take-primes 100)
 (def p100
@@ -33,10 +36,11 @@
   (contains? p100 n))
 
 (deftest rand-prime
-  (testing "a random prime in small range is definitely prime"
-    (is (prime? (last (sut/take-primes (rand-int 100))))))
-  (testing "every prime from small random sampling (~30) is truly a prime"
-    (is (every? true? (map prime? (random-sample 0.3 p100))))))
+  (testing "random primes"
+    (testing "where a random prime in small range is definitely prime"
+      (is (prime? (last (sut/take-primes (rand-int 100))))))
+    (testing "where every prime from small random sampling (~30) is truly a prime"
+      (is (every? true? (map prime? (random-sample 0.3 p100)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Integration tests

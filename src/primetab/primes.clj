@@ -82,16 +82,41 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Printing (see manual tests)
 
-;; (print-row [1 2 3] {:num-primes 3, :bland true})
+(defn del
+  "Shorthand for quickly getting delimiter/separator from options."
+  [opts]
+  (if (:csv opts) "," \tab))
+
+;; (print-heading ["x" "y" "z"] {:bland false, :csv false})
+(defn- print-heading
+  "nothing, color, delimiter"
+  [headings opts]
+  (when-not (:raw opts)
+    (let [colorize (if (:bland opts) identity red)]
+      (printf "%s%s\n" (del opts) (colorize (str/join (del opts) headings))))))
+
+;; (print-row 0 [1 2 3] {:num-primes 3, :bland false})
 (defn- print-row
   "Print a row with optional label."
   ;; NOTE: NIU, but better than the hacky all-in-one `tabulate`.
-  [row options]
-  (let [colorize (if (:bland options) red identity)
+  [label row opts]
+  (let [colorize (if (:bland opts) identity red)
         ;; if-let would be better but can't use binding in else condition
-        row      (let [l (:raw options)]
-                   (if l row (cons (colorize l) row)))]
-    (print (str/join "\t" row))))
+        row (if (:raw opts)
+              row
+              (cons (colorize label) row))]
+    (print (str (str/join (del opts) row) "\n"))))
+
+;; (print-matrix {:num-primes 4, :raw true, :bland false})
+(defn print-matrix
+  ""
+  [opts]
+  (let [n      (get opts :num-primes 10)
+        primes (take-primes n)
+        matrix (prime-matrix n)]
+    (print-heading primes opts)
+    (doall (map #(print-row %1 %2 opts) primes matrix))))
+
 
 (defn- print-marker
   "Flexibly print row and column indicators (column headers, row
@@ -115,13 +140,13 @@
   ;; the **length of the longest number plus one** determines the
   ;; field width.  And the headers/labels could use `---` and `|`.
   [opts]
-  (let [del    (if (:csv opts) "," \tab)
+  (let [d      (del opts)
         primes (take-primes (:num-primes opts))]
-    (print-marker opts (str/join del primes) del "\n")  ; headings
+    (print-marker opts (str/join d primes) d "\n")  ; headings
     (doseq [p primes]
-      (print-marker opts p nil del) ; labels
+      (print-marker opts p nil d) ; labels
       (doseq [q primes]
-        (printf "%s%s" (* p q) del)) ; calculate each cell
+        (printf "%s%s" (* p q) d)) ; calculate each cell
       (println))))
 
 
