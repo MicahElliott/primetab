@@ -2,7 +2,7 @@
   "Print a multiplication table of prime numbers using the sieve of Eratosthenes.
 
   Default behavior is to print column headers, row labels, in color,
-  in TSV format."
+  in TSV format.  Output should be importable as a spreadsheet."
   ;; Not unit-tested
   (:gen-class)
   (:require
@@ -31,8 +31,8 @@
   [opts-summary]
   (let [usg  "Usage: primetab [options]"
         desc (-> 'primetab.core find-ns meta :doc) ; DRY from above
-        more "Full online help: <http://example.com/primetab>"
-        ex   "Example: primetab -n 5 -b"]
+        more "Full online help: <http://github.com/MicahElliott/primetab>"
+        ex   "Example: primetab -n  -b"]
     (str/join "\n\n" [usg desc opts-summary more ex])))
 
 (defn- error-message [errors]
@@ -63,4 +63,4 @@
         (validate-args args)]
     (if exit-message
       (exit ok? exit-message)
-      (primes/tabulate options))))
+      (primes/print-matrix options))))

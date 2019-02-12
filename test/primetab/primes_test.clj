@@ -18,9 +18,13 @@
 
 (deftest good-row-of-4x4
   (testing "matrices"
-    (testing "where the last row of a 4x4 prime matrix matches"
-      (is (= [14 21 35 49]
-             (last (sut/prime-matrix 4)))))))
+    (let [res [14 21 35 49]]
+      (testing "where the last row of a 4x4 prime matrix matches known result"
+        (is (= res
+               (last (sut/prime-matrix 4)))))
+      (testing "that already have generated primes also work"
+        (is (= res
+               (last (sut/prime-matrix (sut/take-primes 4)))))))))
 
 ;; (sut/take-primes 100)
 (def p100

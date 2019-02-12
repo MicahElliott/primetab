@@ -1,9 +1,9 @@
 (ns primetab.primes
-  "Generate the first `n` primes."
+  "Generate the first `n` primes and printable multiplication matrices.
+  See `primetab.primes-exp` for related experimental code."
   (:require
    [clojure.string :as str]
-   [io.aviso.ansi :as coloring :refer [red]]
-   [primetab.primes :as sut]))
+   [io.aviso.ansi :as coloring :refer [red]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Prime generators
@@ -60,8 +60,7 @@
 
 ;; (prime-matrix 4)
 (defn prime-matrix
-  "Produce a matrix (multiplication table) of n sequences of primes.
-  This would be a better way to feed the printer, but NIU.
+  "Produce a matrix (multiplication table) of `n` sequences of primes.
 
   Example:
   => (prime-matrix 4)
@@ -70,11 +69,17 @@
    [10 15 25 35]
    [14 21 35 49]]
 
-  This does nearly twice as many calculations as is necessary, since
-  it's a reflection matrix.
+  Input is either the number `n` of primes to be generated, or a
+  sequence of already generated primes.
+
+  NOTE: This does nearly twice as many calculations as is necessary,
+  since it's a reflection matrix.
   "
-  [n]
-  (let [primes (take-primes n sieve)]
+  [n-or-primes]
+  (let [primes (if (sequential? n-or-primes)
+                 n-or-primes
+                 ;; Just use the fast `sieve` algo.
+                 (take-primes n-or-primes sieve))]
     (for [p primes]
       (for [q primes]
         (* p q)))))
@@ -82,115 +87,41 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Printing (see manual tests)
 
-(defn del
-  "Shorthand for quickly getting delimiter/separator from options."
-  [opts]
-  (if (:csv opts) "," \tab))
+;; Shorthand functions for quickly getting delimiter/separator from options
+(defn- del [opts]       (if (:csv opts) "," \tab))
+(defn- colorizer [opts] (if (:bland opts) identity red))
 
 ;; (print-heading ["x" "y" "z"] {:bland false, :csv false})
 (defn- print-heading
-  "nothing, color, delimiter"
+  "Print a matrix row heading."
   [headings opts]
   (when-not (:raw opts)
-    (let [colorize (if (:bland opts) identity red)]
-      (printf "%s%s\n" (del opts) (colorize (str/join (del opts) headings))))))
+    (printf "%s%s\n"
+            (del opts)
+            ((colorizer opts) (str/join (del opts) headings)))))
 
 ;; (print-row 0 [1 2 3] {:num-primes 3, :bland false})
 (defn- print-row
-  "Print a row with optional label."
+  "Print a row with optional label, color, etc."
   ;; NOTE: NIU, but better than the hacky all-in-one `tabulate`.
   [label row opts]
-  (let [colorize (if (:bland opts) identity red)
-        ;; if-let would be better but can't use binding in else condition
-        row (if (:raw opts)
+  (let [row (if (:raw opts)
               row
-              (cons (colorize label) row))]
+              (cons ((colorizer opts) label) row))]
     (print (str (str/join (del opts) row) "\n"))))
 
 ;; (print-matrix {:num-primes 4, :raw true, :bland false})
 (defn print-matrix
-  ""
+  "Print a multiplication table of primes, while calculating them.
+  Flexibly print row and column indicators (column headers, row
+  labels) based on `opts`.  Possibilities include colorful, bland, or
+  omission."
+  ;; Another way to cleanly delimit is carefully spaced numbers where
+  ;; the **length of the longest number plus one** determines the
+  ;; field width.  And the headers/labels could use `---` and `|`.
   [opts]
   (let [n      (get opts :num-primes 10)
         primes (take-primes n)
         matrix (prime-matrix n)]
     (print-heading primes opts)
     (doall (map #(print-row %1 %2 opts) primes matrix))))
-
-
-(defn- print-marker
-  "Flexibly print row and column indicators (column headers, row
-  labels) based on `opts`.  Possibilities include colorful, bland, or
-  omission."
-  [opts s pre post]
-  (let [printfn  (if (:raw opts) (constantly nil) printf)
-        markerfn (if (:raw opts)
-                   (constantly nil)
-                   (if (:bland opts) identity red))]
-    (if pre
-      (printfn "%s%s%s" pre (markerfn s) post)
-      (printfn "%s%s"       (markerfn s) post))))
-
-(defn tabulate
-  "Print a multiplication table of primes, while calculating them."
-  ;; TODO: leverage `prime-matrix` instead of mixing presentation and
-  ;;       calculation as is done here.
-
-  ;; Another way to cleanly delimit is carefully spaced numbers where
-  ;; the **length of the longest number plus one** determines the
-  ;; field width.  And the headers/labels could use `---` and `|`.
-  [opts]
-  (let [d      (del opts)
-        primes (take-primes (:num-primes opts))]
-    (print-marker opts (str/join d primes) d "\n")  ; headings
-    (doseq [p primes]
-      (print-marker opts p nil d) ; labels
-      (doseq [q primes]
-        (printf "%s%s" (* p q) d)) ; calculate each cell
-      (println))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Primes playground/experiments and early attempts
-
-(comment
-  (defn sieve2 [max]
-    (let [cands (range 2 max)]
-      (filter (fn [tgt cand] (zero? (mod cand tgt))) cands)))
-
-  (defn s1 [tgt all]
-    (filter (fn [cand] (zero? (mod cand tgt))) all))
-
-  (filter #(not-divisible? % 2) (range 3 12))
-  (filter #(not-divisible? % 3) (range 4 12))
-  (filter #(not-divisible? % 4) (range 5 12))
-
-  (def i 3)
-  (def end 12)
-  (filter #(not-divisible? % i) (range (inc i) end))
-
-  (defn x [i end]
-    (filter #(not-divisible? % i) (range (inc i) end)))
-  (x 3 12)
-  (x 4 12)
-
-  (defn sieve [remaining]
-    (let [tgt (first remaining)]
-      (cons (first remaining)
-            (sieve (x tgt 20)))))
-
-  ;; Fun way to see nils after the 10 limit
-  (sieve (range 2 10))
-
-  (map #(not-divisible? % 2) (range 3 12))
-  (map #(not-divisible? % 3) (range 4 12))
-
-  (s1 2 (range 2 10))
-  (let [all (range 2 10)
-        half (range 2 5)]
-    (map #(s1 % all) all))
-
-  (some zero? [1 0 2])
-  (primes-rdc [2 3 5] 7)
-  (primes-rdc [2 3 5] 8)
-  )
