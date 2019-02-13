@@ -2,7 +2,11 @@
 #
 # Check https://circleci.com/docs/2.0/language-clojure/ for more details
 #
-version: 2
+version: 2.1
+
+orbs:
+  codecov: codecov/codecov@1.0.2
+
 jobs:
   build:
     docker:
@@ -14,9 +18,13 @@ jobs:
     environment:
       LEIN_ROOT: "true"
       # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m -Xss1g'
+      JVM_OPTS: -Xmx3200m -Xss1g
+      CODECOV_TOKEN: 5c214e49-a7b2-4037-9048-d4bc8505c12f
 
     steps:
+      - codecov/upload:
+          file: {{ coverage_report_filepath }}
+
       - checkout
 
       # Download and cache dependencies
@@ -34,4 +42,4 @@ jobs:
           key: v1-dependencies-{{ checksum "project.clj" }}
 
       # run tests!
-      - run: lein test
+      - run: lein test :all
