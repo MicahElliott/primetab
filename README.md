@@ -86,12 +86,10 @@ There are configured setups for ensuring code quality:
 CodeClimate does not treat Clojure as a first-class citizen, but they
 support some basic checks, like `lein kibit`.
 
-## TODO
+## TODO (maybe)
 
 - Expand on tests for boundaries, long-running, overflows, etc
-- Maybe add some specs
-- Make use of `prime-matrix` instead of ugly `tabulate`
-- Rearrange and clarify prime funcs that are not in use/experimental
+- Add some specs
 - Add reloaded repl workflow via Component
 
 ## License
