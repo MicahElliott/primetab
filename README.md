@@ -1,6 +1,7 @@
 # primetab
 
 [![CircleCI](https://circleci.com/gh/MicahElliott/primetab/tree/master.svg?style=svg)](https://circleci.com/gh/MicahElliott/primetab/tree/master)
+[![codecov](https://codecov.io/gh/MicahElliott/primetab/branch/master/graph/badge.svg)](https://codecov.io/gh/MicahElliott/primetab)
 <!-- [![Maintainability](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/maintainability)](https://codeclimate.com/github/MicahElliott/primetab/maintainability) -->
 <!-- [![Test Coverage](https://api.codeclimate.com/v1/badges/cc8be0237070cc2d38d9/test_coverage)](https://codeclimate.com/github/MicahElliott/primetab/test_coverage) -->
 
